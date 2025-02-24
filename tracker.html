@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        header {
+            background: #28a745;
+            color: white;
+            padding: 15px;
+            font-size: 24px;
+        }
+        #tracker {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px gray;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        input, button, select {
+            padding: 10px;
+            margin: 10px;
+            width: 80%;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #218838;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background: #e3fceb;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .delete-btn:hover {
+            background: #c82333;
+        }
+        .credit {
+            color: green;
+        }
+        .debit {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <header>💰 Expense Tracker</header>
+    <main>
+        <section id="tracker">
+            <h2>Track Your Transactions</h2>
+            <input type="text" id="transactionName" placeholder="Transaction name...">
+            <input type="number" id="transactionAmount" placeholder="Amount ($)">
+            <select id="transactionType">
+                <option value="credit">Credit</option>
+                <option value="debit">Debit</option>
+            </select>
+            <button id="addTransaction">Add Transaction</button>
+            <ul id="transactionList"></ul>
+            <h3>Total Balance: $<span id="totalBalance">0</span></h3>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Expense Tracker. All rights reserved.</p>
+    </footer>
+    <script>
+        let balance = 0;
+        document.getElementById('addTransaction').addEventListener('click', function() {
+            const transactionName = document.getElementById('transactionName').value.trim();
+            const transactionAmount = parseFloat(document.getElementById('transactionAmount').value);
+            const transactionType = document.getElementById('transactionType').value;
+            
+            if (transactionName === '' || isNaN(transactionAmount) || transactionAmount <= 0) {
+                alert('Please enter a valid transaction and amount.');
+                return;
+            }
+            
+            const transactionList = document.getElementById('transactionList');
+            const transactionItem = document.createElement('li');
+            transactionItem.textContent = `${transactionName}: $${transactionAmount.toFixed(2)}`;
+            transactionItem.classList.add(transactionType);
+            
+            if (transactionType === 'credit') {
+                balance += transactionAmount;
+            } else {
+                balance -= transactionAmount;
+            }
+            
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = '❌';
+            deleteButton.classList.add('delete-btn');
+            deleteButton.addEventListener('click', function() {
+                if (transactionType === 'credit') {
+                    balance -= transactionAmount;
+                } else {
+                    balance += transactionAmount;
+                }
+                document.getElementById('totalBalance').textContent = balance.toFixed(2);
+                transactionList.removeChild(transactionItem);
+            });
+            
+            transactionItem.appendChild(deleteButton);
+            transactionList.appendChild(transactionItem);
+            
+            document.getElementById('totalBalance').textContent = balance.toFixed(2);
+            
+            document.getElementById('transactionName').value = '';
+            document.getElementById('transactionAmount').value = '';
+        });
+    </script>
+</body>
+</html>
